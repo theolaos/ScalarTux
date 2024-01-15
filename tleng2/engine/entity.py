@@ -62,4 +62,4 @@ class Entity:
         if GlobalSettings._debug:
             self.entity_hitbox.render_outline()
 
-        self.anim_manager.render()
+        self.anim_service.render()

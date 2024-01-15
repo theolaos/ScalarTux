@@ -1,7 +1,7 @@
 import pygame
 from warnings import warn
 from ..utils.colors import WHITE, BLACK
-from ..utils.settings import GlobalSettings
+from ..utils import GlobalSettings, GlobalProperties
 from ..utils.annotations import Color
 
 
@@ -58,9 +58,9 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
         If there the outline has been set to anything than 0, then it will be rendered
         :return: It returns nothing
         '''
-        pygame.draw.rect(GlobalSettings._display, self.color, self.rect)
+        pygame.draw.rect(GlobalProperties._display, self.color, self.rect)
         if self.thickness != 0:            
-            pygame.draw.rect(GlobalSettings._display, self.color, self.frame_rect, abs(self.thickness))
+            pygame.draw.rect(GlobalProperties._display, self.color, self.frame_rect, abs(self.thickness))
 
 
     def render_outline(self) -> None:
@@ -68,7 +68,7 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
         Only renders the outline of the area, the outline needs to be set before it gets rendered.
         :return: It returns nothing
         '''
-        pygame.draw.rect(GlobalSettings._display, self.color, self.frame_rect, abs(self.thickness))
+        pygame.draw.rect(GlobalProperties._display, self.color, self.frame_rect, abs(self.thickness))
 
 
     def set_outline(self, 

@@ -1,4 +1,4 @@
-from ..utils.settings import GlobalSettings
+from ..utils import GlobalSettings, GlobalProperties
 import pygame
 
 class LazyAnimationService:
@@ -57,7 +57,7 @@ class LazyAnimationService:
         # self.window.blit(self.animDict[self.currentAnim][int(self.anim_frame_data)],(self.imageX,self.imageY))
         #(e.x.: 12/60=0.2, every frame its going to be incremented by 0.2, if it is more than the lenght of the animation (4)
         #    then the next image of the animation will play and anim_frame_data will reset)
-        current_fps = GlobalSettings._clock.get_fps()
+        current_fps = GlobalProperties._clock.get_fps()
         target_fps = GlobalSettings._fps
         anim_fps = self.anim_dict[self.current_anim]["anim_fps"]
 
@@ -71,4 +71,4 @@ class LazyAnimationService:
 
 
     def render(self) -> None:
-        GlobalSettings._display.blit(self.anim_dict[self.current_anim]["anim"][int(self.anim_frame_data)], (self.anim_x, self.anim_y))
+        GlobalProperties._display.blit(self.anim_dict[self.current_anim]["anim"][int(self.anim_frame_data)], (self.anim_x, self.anim_y))

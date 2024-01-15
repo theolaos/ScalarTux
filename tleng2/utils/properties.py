@@ -71,3 +71,7 @@ class GlobalProperties:
         Fill the display with color.
         """
         GlobalProperties._display.fill(color)
+    
+    @staticmethod
+    def clock_tick_dt() -> float:
+        ...

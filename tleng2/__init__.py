@@ -1,6 +1,26 @@
-from os import environ
+from os import environ, path, getcwd
+import json
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
 # print(environ.get('PYGAME_HIDE_SUPPORT_PROMPT')) # debug
+
+from .utils.colors import *
+from .utils.settings import GlobalSettings, LocalSettings
+# If there is a settings.json file in the same directory then 
+#   try to import settings from there to the GlobalSettings class.
+for file_name in ["settings.json", path.join(".","settings.json") ,path.join("tleng2","settings.json"), path.join(getcwd(), "tleng2","settings.json")]:
+    try:
+        with open(file_name) as settings_json:
+            data = json.load(settings_json)
+            print(data)
+
+        break
+    except:
+        print(f"Could not find the settings.json file, moving on. (Tried {file_name})")
+        print(path.exists(file_name))
+
+from .utils.properties import GlobalProperties, LocalProperties
+from .utils.debug import debug_print
+
 
 from .engine.area import Area
 from .engine.entity import Entity
@@ -19,11 +39,6 @@ from .services.image import ImageService
 from .services.sound import SoundService
 from .services.font import FontService
 from .services.tilemap import TileMap, TileSet
-
-from .utils.colors import *
-from .utils.settings import GlobalSettings, LocalSettings
-from .utils.properties import GlobalProperties, LocalProperties
-from .utils.debug import debug_print
 
 from .utils.subpixel import SubPixelSurface
 
