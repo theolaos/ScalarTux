@@ -1,4 +1,5 @@
 import pygame, json
+from os import path, getcwd
 from abc import abstractmethod, ABC
 
 class LocalSettings:
@@ -24,7 +25,7 @@ class GlobalSettings:
     _display_scaling = 1
     _scalable_window = False
     _display_ratio_lock = True #if the game only supports 500x500 then the window will ony scale to that ration
-    _fps = 60
+    _fps = 5
 
     _font = None # global font for the whole game.
     _debug = False
@@ -46,4 +47,15 @@ class GlobalSettings:
         """
         Pass the saved settings from json.
         """
-        pass
+        for file_name in ["settings.json", path.join(".","settings.json") ,path.join("tleng2","settings.json"), path.join(getcwd(), "tleng2","settings.json")]:
+            try:
+                with open(file_name, "r") as settings_json:
+                    data = json.load(settings_json)
+                    print(data)
+
+                    break
+            except Exception as e:
+                print(e)
+                print(f"Could not find the settings.json file, moving on. (Tried {file_name})")
+                print(path.exists(file_name))
+

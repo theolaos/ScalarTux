@@ -27,6 +27,7 @@ class GlobalProperties:
     _window = None # the window that you see
     _display = None # the inner display of the window
     _clock = pygame.time.Clock()
+    _dt = 0
 
     # _index_event = 1
 
@@ -73,5 +74,13 @@ class GlobalProperties:
         GlobalProperties._display.fill(color)
     
     @staticmethod
-    def clock_tick_dt() -> float:
-        ...
+    def clock_tick_dt(target_fps:int) -> float:
+        return GlobalProperties._clock.tick(target_fps) / 1000
+    
+
+    @staticmethod
+    def clock_tick_GP_dt(target_fps:int) -> float:
+        """
+        Stores the dt value in GlobalProperties.
+        """
+        GlobalProperties._dt = GlobalProperties._clock.tick(target_fps) / 1000

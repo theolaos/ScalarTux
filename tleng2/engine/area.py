@@ -3,6 +3,7 @@ from warnings import warn
 from ..utils.colors import WHITE, BLACK
 from ..utils import GlobalSettings, GlobalProperties
 from ..utils.annotations import Color
+from ..utils.debug import debug_print
 
 
 class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
@@ -40,8 +41,8 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
         :param poly_polygon: Not implemented yet
         '''
         self.image = pygame.Surface([width,height])
-        print(float(x), float(y), float(width) , float(height), type(x), type(y), type(width) , type(height))
-        self.rect = pygame.Rect(float(x), float(y), float(width) , float(height)) # screen coordinates
+        debug_print(float(x), float(y), float(width) , float(height), type(x), type(y), type(width) , type(height))
+        self.rect = pygame.FRect(float(x), float(y), float(width) , float(height)) # screen coordinates
 
         self.core_x = x # actual x coordinate
         self.core_y = y # actual y coordinate
@@ -68,7 +69,7 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
         Only renders the outline of the area, the outline needs to be set before it gets rendered.
         :return: It returns nothing
         '''
-        pygame.draw.rect(GlobalProperties._display, self.color, self.frame_rect, abs(self.thickness))
+        pygame.draw.rect(GlobalProperties._display, self.frame_color, self.frame_rect, abs(self.thickness))
 
 
     def set_outline(self, 
@@ -94,10 +95,10 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
 
     def update_entity(
             self,
-            x = None,
-            y = None,
-            width = None,
-            height = None,
+            x,
+            y,
+            width,
+            height,
     ) -> None:
         self.core_x = x
         self.core_y = y
@@ -123,3 +124,19 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
         self.rect.y = self.core_y
         self.rect.width = self.core_width
         self.rect.height = self.core_height
+
+        if self.frame_rect != None:
+            self.frame_rect.x = self.core_x - self.thickness
+            self.frame_rect.y = self.core_y - self.thickness
+            # self.frame_rect.width = self.core_width
+            # self.frame_rect.height = self.core_height
+    
+    def round_update(self) -> None:
+        self.rect.x = round(self.core_x)
+        self.rect.y = round(self.core_y)
+        self.rect.width = round(self.core_width)
+        self.rect.height = round(self.core_height)
+
+        if self.frame_rect != None:
+            self.frame_rect.x = round(self.core_x - self.thickness)
+            self.frame_rect.y = round(self.core_y - self.thickness)

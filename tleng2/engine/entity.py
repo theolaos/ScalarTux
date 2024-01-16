@@ -63,3 +63,12 @@ class Entity:
             self.entity_hitbox.render_outline()
 
         self.anim_service.render()
+
+    def update_area(self) -> None:
+        self.hitbox.core_x = self.core_x
+        self.hitbox.core_y = self.core_y
+        self.hitbox.core_width = self.core_width
+        self.hitbox.core_height = self.core_height
+
+        # self.hitbox.round_update()
+        self.hitbox.update()

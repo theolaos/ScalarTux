@@ -1,12 +1,6 @@
-'''
+"""
 Scene handler
 It justs puts the stuff on the screen and it handles the <scene changes> like menu->game->pause screen etc.
-'''
-import pygame
-from abc import ABC, abstractmethod
-#import pygame
-
-"""
 Idea:
 SceneHandler will get layers, that the dev can assign multiple scenes to play.
 Scene will just handle the updates of the objects that it draws. After they were updated and drawn to the buffer screen then they will be flipped and start again onto the next frame.
@@ -32,8 +26,11 @@ fn scene_phase:
 
 
 """
-
+import pygame
 from abc import ABC, abstractmethod
+from ..utils.properties import GlobalProperties
+from ..utils.settings import GlobalSettings
+from ..utils.debug import debug_print
 
 class SceneCatcher:
     scenes = {}
@@ -72,6 +69,9 @@ class Scene(SceneCatcher, ABC):
 
 
 class SceneManager:
+    """
+    Manages like the animation service, scenes how they are getting rendered. 
+    """
     def __init__(self, ) -> None: 
         """
         :param scenes: The dictionary should have Scene classes, or classes that have the structure of a scene class.
@@ -80,6 +80,7 @@ class SceneManager:
         self.scenes = None
         self.current_scene = ''
         self.layers = []
+
 
     def return_scene_phase(self, key:str) -> Scene:
         """
@@ -97,13 +98,37 @@ class SceneManager:
     def render_current_scene(self) -> None:
         try:
             for scene in SceneCatcher.scenes[self.current_scene]:
-                scene.update_stuff()
-                scene.render_stuff()
-        except: 
+                keys_pressed = pygame.key.get_pressed()
+                scene.event_handling(keys_pressed)
+                scene.update()
+                scene.render()
+                GlobalProperties.update_window()
+                GlobalProperties.clock_tick_GP_dt(GlobalSettings._fps)
+                pygame.display.flip()
+
+                debug_print("Successfull scene render from SceneManager from SceneCatcher")
+                #GlobalProperties.update_window()
+        except Exception as e: 
+            print(e)
             for scene in self.scenes[self.current_scene]:
                 scene.event_handling()
-                scene.update_stuff()
-                scene.render_stuff()
+                scene.update()
+                scene.render()
+
+class SceneHandler:
+    """
+    Depracated, use Scene Manager instead!
+    """
+    def __init__(self):
+        self.current_scene = ''
+
+    def load_scenes(self, scenes):
+        self.scenes = scenes
+    
+    def render_current_scene(self):
+        for scene in SceneCatcher.scenes[self.current_scene]:
+            scene.update_stuff()
+            scene.render_stuff()
 # the general idea that the scene can be controlled by the scene itself is kinda stupid.
 
 
