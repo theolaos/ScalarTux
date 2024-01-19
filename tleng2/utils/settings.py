@@ -25,7 +25,7 @@ class GlobalSettings:
     _display_scaling = 1
     _scalable_window = False
     _display_ratio_lock = True #if the game only supports 500x500 then the window will ony scale to that ration
-    _fps = 5
+    _fps = 20
 
     _font = None # global font for the whole game.
     _debug = False
@@ -52,7 +52,7 @@ class GlobalSettings:
                 with open(file_name, "r") as settings_json:
                     data = json.load(settings_json)
                     print(data)
-
+                    # TODO: Write the load_settings_json to actually use the settings that are in json.
                     break
             except Exception as e:
                 print(e)

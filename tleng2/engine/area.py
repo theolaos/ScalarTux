@@ -41,7 +41,7 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
         :param poly_polygon: Not implemented yet
         '''
         self.image = pygame.Surface([width,height])
-        debug_print(float(x), float(y), float(width) , float(height), type(x), type(y), type(width) , type(height))
+        debug_print(float(x), float(y), float(width) , float(height), type(x), type(y), type(width) , type(height), tags=["EngineAreaInit"])
         self.rect = pygame.FRect(float(x), float(y), float(width) , float(height)) # screen coordinates
 
         self.core_x = x # actual x coordinate

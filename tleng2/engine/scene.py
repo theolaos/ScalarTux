@@ -68,6 +68,9 @@ class Scene(SceneCatcher, ABC):
         '''
 
 
+
+
+
 class SceneManager:
     """
     Manages like the animation service, scenes how they are getting rendered. 
@@ -95,6 +98,17 @@ class SceneManager:
         self.scenes = scenes
     
 
+    @staticmethod
+    def rendering_scene(scene):
+        keys_pressed = pygame.key.get_pressed()
+        scene.event_handling(keys_pressed)
+        scene.update()
+        scene.render()
+        GlobalProperties.update_window()
+        GlobalProperties.clock_tick_GP_dt(GlobalSettings._fps)
+        pygame.display.flip()
+
+
     def render_current_scene(self) -> None:
         try:
             for scene in SceneCatcher.scenes[self.current_scene]:
@@ -105,15 +119,11 @@ class SceneManager:
                 GlobalProperties.update_window()
                 GlobalProperties.clock_tick_GP_dt(GlobalSettings._fps)
                 pygame.display.flip()
-
-                debug_print("Successfull scene render from SceneManager from SceneCatcher")
-                #GlobalProperties.update_window()
+                debug_print("Successfull scene render from SceneManager from SceneCatcher", tags=["Rendering"])
         except Exception as e: 
-            print(e)
+            print('hello',e)
             for scene in self.scenes[self.current_scene]:
-                scene.event_handling()
-                scene.update()
-                scene.render()
+                SceneManager.rendering_scene(scene=scene)
 
 class SceneHandler:
     """

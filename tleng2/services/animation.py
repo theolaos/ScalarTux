@@ -10,10 +10,11 @@ class LazyAnimationService:
         self.anim_y = 0
         self.anim_dict = {}
         self.current_anim = ''
+        self.current_image_anim = ''
         self.anim_frame_data = 0
 
 
-    def import_animation(self,
+    def load_animation(self,
             anim_dict:dict
             ) -> None:
         '''
@@ -21,7 +22,7 @@ class LazyAnimationService:
 
         {"%name_anim1%" : {"anim":[str,str,...], "anim_fps" : int}, "%name_anim2%" : {"anim":[str,str,...], "frames" : int}, ...}
         '''
-        self.anim_dict = anim_dict
+        # self.anim_dict = anim_dict
         temp_anim_keys = anim_dict.keys()
         #looping through the whole dictianary to change them into pygame images
         for key in temp_anim_keys:
@@ -32,6 +33,12 @@ class LazyAnimationService:
 
             self.anim_dict.update({key: temp_anim_dict}) #updating the entitys animation dict
             temp_anim_dict = [] #resseting the NEW animation list
+    
+
+    def import_animation(self,
+            anim_dict:dict
+            ) -> None:
+        self.anim_dict.update(anim_dict)
 
 
     def flip_anim(self,key,flip:tuple[bool,bool]=(False,False)) -> list:
@@ -59,16 +66,23 @@ class LazyAnimationService:
         #    then the next image of the animation will play and anim_frame_data will reset)
         current_fps = GlobalProperties._clock.get_fps()
         target_fps = GlobalSettings._fps
-        anim_fps = self.anim_dict[self.current_anim]["anim_fps"]
+        anim_dict_length = len(self.anim_dict[self.current_anim])
 
+        if self.current_anim == "image":
+            return None
+        
+        anim_fps = self.anim_dict[self.current_anim]["anim_fps"]
         if current_fps > 0:
             self.anim_frame_data += anim_fps/current_fps
         else:
             self.anim_frame_data += anim_fps/target_fps #just in case the current_fps hit 0
 
-        if self.anim_frame_data >= len(self.animDict[self.current_anim]):
+        if self.anim_frame_data >= anim_dict_length:
             self.anim_frame_data = 0
 
 
     def render(self) -> None:
-        GlobalProperties._display.blit(self.anim_dict[self.current_anim]["anim"][int(self.anim_frame_data)], (self.anim_x, self.anim_y))
+        if self.current_anim == "images":
+            GlobalProperties._display.blit(self.anim_dict[self.current_anim][self.current_image_anim], (self.anim_x, self.anim_y))
+        else:
+            GlobalProperties._display.blit(self.anim_dict[self.current_anim]["anim"][int(self.anim_frame_data)], (self.anim_x, self.anim_y))

@@ -5,16 +5,19 @@ if getattr(sys, 'frozen', False):
 
 import pygame
 from tleng2 import Camera, GlobalSettings, GlobalProperties, Entity, Scene, SceneManager, SceneCatcher, debug_print
+from tleng2.utils.debug import DebugTags
 from tleng2.utils.colors import RED
 # from tleng2.utils.debug import debug_print
 
 pygame.init()
 
+DebugTags.import_tags(['Rendering'])
+
 GlobalSettings.update_bresolution((1280,720))
 GlobalProperties.load_display()
 GlobalProperties.set_caption("ScalarTux")
 
-GlobalSettings._debug = False
+GlobalSettings._debug = True
 GlobalSettings.load_settings_json()
 
 camera = Camera()
@@ -31,6 +34,8 @@ class Menu(Scene):
         self.tux_player.hitbox.set_outline(5, RED)
         self.tux_movement = ObjectMovement()
         self.TUX_VEL = 100
+        self.tux_player.anim_service.current_anim = "images"
+        self.tux_player.anim_service.current_image_anim = "default_surf"
     
     def event_handling(self,keys_pressed):
         for event in pygame.event.get():
@@ -49,11 +54,13 @@ class Menu(Scene):
 
     def render(self):
         GlobalProperties.fill_display((200,255,200))
-        self.tux_player.hitbox.render()
+        # self.tux_player.hitbox.render()
+        self.tux_player.anim_service.anim_dict["images"]["default_surf"].fill(RED)
+        self.tux_player.render()
         #self.tux_player.hitbox.render_outline()  
         #print("%.2f %.2f" % (self.tux_player.core_x , self.tux_player.core_y))
         
-        debug_print("render from menu done")
+        debug_print("render from menu done", tags=["Rendering"])
 
         
 
@@ -102,7 +109,7 @@ if __name__ == '__main__':
     SM.current_scene = 'menu'
     while True:
         SM.render_current_scene()
-        debug_print(SceneCatcher.scenes)
+        debug_print(SceneCatcher.scenes, tags=["Rendering"])
 
 
 # dt = 0
