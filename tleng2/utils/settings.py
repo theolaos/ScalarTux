@@ -25,7 +25,7 @@ class GlobalSettings:
     _display_scaling = 1
     _scalable_window = False
     _display_ratio_lock = True #if the game only supports 500x500 then the window will ony scale to that ration
-    _fps = 20
+    _fps = 60
 
     _font = None # global font for the whole game.
     _debug = False

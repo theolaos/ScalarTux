@@ -10,6 +10,9 @@ SceneHandler should recognise the state of the app for the right scene to play.
 
 Pseudo code:
 
+class menu_scene ...
+class game_scene ...
+
 scene_dict = menu : menu_scene, game : game_scene  ...
 game_state = menu
 
@@ -31,6 +34,7 @@ from abc import ABC, abstractmethod
 from ..utils.properties import GlobalProperties
 from ..utils.settings import GlobalSettings
 from ..utils.debug import debug_print
+
 
 class SceneCatcher:
     scenes = {}
@@ -66,9 +70,6 @@ class Scene(SceneCatcher, ABC):
         '''
         what to render to the screen
         '''
-
-
-
 
 
 class SceneManager:
@@ -124,6 +125,7 @@ class SceneManager:
             print('hello',e)
             for scene in self.scenes[self.current_scene]:
                 SceneManager.rendering_scene(scene=scene)
+
 
 class SceneHandler:
     """

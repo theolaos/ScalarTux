@@ -1,6 +1,13 @@
 from ..utils import GlobalSettings, GlobalProperties
 import pygame
 
+class FancyAnimationService:
+    """
+    It uses bones instead of multiple images.
+    """
+    ...
+
+
 class LazyAnimationService:
     """
     Animation that imports image files immedietly.

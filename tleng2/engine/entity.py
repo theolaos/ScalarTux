@@ -13,6 +13,7 @@ class EntityCatcher:
         self.entity_in_scene.update({scene_key:[self]})
 
 
+
 class Entity:
     def __init__(
             self,
@@ -28,7 +29,11 @@ class Entity:
         :param anim_service_name: It's an experimental feature that is designed to hopefully 
                                   make the programmer easily assign anim_services to the entity. 
                                   The default is LAS (LazyAnimationService).
-
+        
+                                  - LAS : LazyAnimationService
+                                  - IS  : ImageService (static image)
+                                  - FAS : FancyAnimationService (not implemented yet)
+        
         :return: It returns Nothing (None)
         """
 
