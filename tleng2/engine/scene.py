@@ -122,9 +122,9 @@ class SceneManager:
                 pygame.display.flip()
                 debug_print("Successfull scene render from SceneManager from SceneCatcher", tags=["Rendering"])
         except Exception as e: 
-            print('hello',e)
-            for scene in self.scenes[self.current_scene]:
-                SceneManager.rendering_scene(scene=scene)
+            print('An error occured: \n',e)
+            # for scene in self.scenes[self.current_scene]:
+            #     SceneManager.rendering_scene(scene=scene)
 
 
 class SceneHandler:

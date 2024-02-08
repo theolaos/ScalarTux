@@ -54,23 +54,32 @@ class Menu(Scene):
         self.tux_movement.keyboard_nm(keys_pressed=keys_pressed)
 
 
+    def horizontal_collision(self):
+        if self.tux_player.get_hitbox_colliderect(self.floor.rect):
+            if self.tux_movement.direction.x > 0:
+                self.tux_player.core_x = self.floor.rect.left + self.tux_player.get_hitbox_width()
+                self.tux_movement.direction.x = 0
+            if self.tux_movement.direction.x < 0:
+                self.tux_player.core_x = self.floor.rect.right
+                self.tux_movement.direction.x = 0
+
+    def vertical_collision(self):
+
+        if self.tux_player.get_hitbox_colliderect(self.floor.rect):
+            if self.tux_movement.direction.y > 0:
+                self.tux_player.core_x = self.floor.rect.top + self.tux_player.get_hitbox_height()
+                self.tux_movement.direction.y = 0
+            if self.tux_movement.direction.y < 0:
+                self.tux_player.core_x = self.floor.rect.bottom
+                self.tux_movement.direction.y = 0
+
+
     def update(self):
-        # if not collided then apply gravity
-        if (self.tux_player.core_y + self.tux_player.core_height) < self.floor.core_y and self.tux_player.core_x > (self.floor.core_x + self.floor.core_width):
-            self.forces_tux.y += self.GRAVITY * GlobalProperties._dt
-        else:
-            # if collided then reset forces and movement
-            self.tux_player.core_y = self.floor.core_y - self.tux_player.core_height
-            self.forces_tux.x, self.forces_tux.y = 0,0
-            self.move_tux.y = 0
-            
-            if self.tux_movement.direction.y < -0.5:
-                self.forces_tux.y = -200 * GlobalProperties._dt    
-
-        # while collided if up key is pressed then "jump"
-        # if self.tux_movement.direction.y < -0.5 and not (self.tux_player.core_y + self.tux_player.core_height) < self.floor.core_y:
-            # self.forces_tux.y = -200 * GlobalProperties._dt
-
+        self.forces_tux.y += 0.8
+        if self.tux_movement.direction.y < -0.5:
+            self.forces_tux.y += -16 * GlobalProperties._dt 
+        self.horizontal_collision()
+        self.vertical_collision()
 
         self.move_tux += self.forces_tux
         debug_print("key direction", self.tux_movement.direction, tags=['Coordinates'])
@@ -82,8 +91,11 @@ class Menu(Scene):
         # self.tux_player.core_y += self.tux_movement.direction.y * self.TUX_VEL * GlobalProperties._dt
 
         # forces movement (accelaration)
-        self.tux_player.core_x += GlobalProperties._dt * (self.move_tux.x + self.forces_tux.x)
-        self.tux_player.core_y += GlobalProperties._dt * (self.move_tux.y + self.forces_tux.y)
+        self.tux_player.core_x += GlobalProperties._dt * self.move_tux.x
+        self.tux_player.core_y += GlobalProperties._dt * self.move_tux.y
+
+        self.forces_tux.x = 0
+        self.forces_tux.y = 0
 
         # self.tux_player.update()
         self.tux_player.update_area()
@@ -130,11 +142,9 @@ class ObjectMovement():
         if keys_pressed[pygame.K_a]: # left
             self.direction.x += movement_map[1]
 
-        if keys_pressed[pygame.K_w]: # up
+        if keys_pressed[pygame.K_SPACE]: # up
             self.direction.y += movement_map[2] 
 
-        if keys_pressed[pygame.K_s]: # down
-            self.direction.y += movement_map[3]  
 
         if self.direction.x != 0 and self.direction.y != 0:
             self.direction = self.direction.normalize()

@@ -48,10 +48,10 @@ class LazyAnimationService:
         self.anim_dict.update(anim_dict)
 
 
-    def flip_anim(self,key,flip:tuple[bool,bool]=(False,False)) -> list:
+    def flip_anim(self,key,flip:tuple[bool,bool]=(False,False)) -> list: # TODO: fix this
         temp_anim_dict = self.anim_dict.copy()
+
         for j in range(len(self.anim_dict[key])):
-            
             temp_anim_dict += [self.new_image]
 
 

@@ -4,7 +4,9 @@ from ..services.image import ImageService
 from ..services.sound import SoundService
 from ..utils.settings import GlobalSettings
 from ..utils.colors import RED
+from typing import overload
 import pygame
+
 
 class EntityCatcher:
     entity_in_scene = {}
@@ -98,3 +100,35 @@ class Entity:
 
         # self.hitbox.round_update()
         self.hitbox.update()
+    
+    #abstraction for this mouthful "koutsoumara"
+    def get_hitbox_x(self)->int:
+        return self.hitbox.rect.x
+    
+    
+    def get_hitbox_y(self)->int:
+        return self.hitbox.rect.y
+    
+    
+    def get_hitbox_width(self)->int:
+        return self.hitbox.rect.width
+    
+    
+    def get_hitbox_height(self)->int:
+        return self.hitbox.rect.height
+    
+
+    def get_hitbox_colliderect(self, *info)->bool:
+        """
+        @overload
+        def colliderect(self, rect: RectValue, /) -> bool: ...
+        @overload
+        def colliderect(self, left_top: Coordinate, width_height: Coordinate, /) -> bool: ...
+        @overload
+        def colliderect(
+            self, left: float, top: float, width: float, height: float, /
+        ) -> bool: ...
+        """
+        return self.hitbox.rect.colliderect(*info)
+    
+

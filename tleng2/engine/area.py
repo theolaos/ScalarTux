@@ -2,7 +2,7 @@ import pygame
 from warnings import warn
 from ..utils.colors import WHITE, BLACK
 from ..utils import GlobalSettings, GlobalProperties
-from ..utils.annotations import Color
+from ..utils.stubs.annotations import Color
 from ..utils.debug import debug_print
 
 
