@@ -43,9 +43,11 @@ class Menu(Scene):
         self.tux_player.anim_service.current_anim = "images"
         self.tux_player.anim_service.current_image_anim = "default_surf"
 
-        self.floor = Area(100,400,200,50,BLACK)
+        self.floor = Area(100,400,200,200,BLACK)
 
         self.GRAVITY = 0.8
+
+        self.on_ground = False
     
 
     def event_handling(self,keys_pressed):
@@ -90,16 +92,16 @@ class Menu(Scene):
 
     def update(self):
         self.forces_tux.y += 0.8
-        if self.tux_movement.direction.y < -0.5:
-            self.forces_tux.y += -2 
+        if self.tux_movement.direction.y < -0.5 and self.on_ground:
+            self.forces_tux.y += -2
 
         # self.horizontal_collision()
         # self.vertical_collision()
         self.move_tux += self.forces_tux
 
         # forces movement (accelaration)
-        self.final_move.x += GlobalProperties._dt * (self.move_tux.x + self.tux_movement.direction.x * self.TUX_VEL)
-        self.final_move.y += (GlobalProperties._dt * self.move_tux.y)
+        self.final_move.x +=  (self.move_tux.x + self.tux_movement.direction.x * self.TUX_VEL)
+        self.final_move.y += (GlobalProperties._dt* self.move_tux.y)
 
         
         debug_print("key direction", self.tux_movement.direction, tags=['Coordinates'])
@@ -108,6 +110,7 @@ class Menu(Scene):
         debug_print("Coords", self.tux_player.hitbox.rect ,tags=['Coordinates'])
         debug_print("Coords", self.tux_player.core_x, self.tux_player.core_y ,tags=['Coordinates'])
         debug_print("final_move", self.final_move ,tags=['Coordinates'])
+        debug_print("on_ground", self.on_ground ,tags=['Coordinates'])
         
         # self.tux_player.core_y += self.tux_movement.direction.y * self.TUX_VEL * GlobalProperties._dt
 
@@ -123,6 +126,7 @@ class Menu(Scene):
                 self.tux_player.new_hitbox_left(self.floor.rect.right)
         else:
             self.tux_player.core_x += self.final_move.x
+            self.on_ground = False
 
         temp_rect = self.tux_player.hitbox.rect 
         temp_rect.y += self.final_move.y
@@ -133,12 +137,15 @@ class Menu(Scene):
                 self.tux_player.new_hitbox_bottom(self.floor.rect.top)
                 self.move_tux.y = 0
                 self.forces_tux.y = 0
+                self.on_ground = True
             elif self.final_move.y < 0:
                 self.tux_player.new_hitbox_top(self.floor.rect.bottom)
                 self.move_tux.y = 0
                 self.forces_tux.y = 0
         else:
             self.tux_player.core_y += self.final_move.y
+            self.on_ground = False
+
 
         self.forces_tux.x = 0
         self.forces_tux.y = 0
