@@ -11,7 +11,7 @@ from tleng2.utils.colors import RED, BLACK
 
 pygame.init()
 
-DebugTags.import_tags(['Coordinates'])
+DebugTags.import_tags(['Coordinates', "Collision"])
 
 GlobalSettings.update_bresolution((1280,720))
 GlobalProperties.load_display()
@@ -36,8 +36,9 @@ class Menu(Scene):
         self.tux_movement = ObjectMovement()
         self.forces_tux = pygame.math.Vector2(0,0)
         self.move_tux =  pygame.math.Vector2(0,0)
+        self.final_move = pygame.math.Vector2(0,0)
 
-        self.TUX_VEL = 8
+        self.TUX_VEL = 16
 
         self.tux_player.anim_service.current_anim = "images"
         self.tux_player.anim_service.current_image_anim = "default_surf"
@@ -46,6 +47,7 @@ class Menu(Scene):
 
         self.GRAVITY = 0.8
     
+
     def event_handling(self,keys_pressed):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -55,47 +57,93 @@ class Menu(Scene):
 
 
     def horizontal_collision(self):
-        if self.tux_player.get_hitbox_colliderect(self.floor.rect):
-            if self.tux_movement.direction.x > 0:
-                self.tux_player.core_x = self.floor.rect.left + self.tux_player.get_hitbox_width()
-                self.tux_movement.direction.x = 0
+        # if self.tux_player.get_hitbox_colliderect(self.floor.rect):
+        if self.floor.rect.colliderect(self.tux_player.hitbox.rect):
             if self.tux_movement.direction.x < 0:
                 self.tux_player.core_x = self.floor.rect.right
-                self.tux_movement.direction.x = 0
+            
+            elif self.tux_movement.direction.x > 0:
+                self.tux_player.new_hitbox_bottom = self.floor.rect.left + self.tux_player.get_hitbox_width()
+
+
+            
+
+            # self.move_tux.x = 0
+
 
     def vertical_collision(self):
 
-        if self.tux_player.get_hitbox_colliderect(self.floor.rect):
-            if self.tux_movement.direction.y > 0:
-                self.tux_player.core_x = self.floor.rect.top + self.tux_player.get_hitbox_height()
-                self.tux_movement.direction.y = 0
-            if self.tux_movement.direction.y < 0:
-                self.tux_player.core_x = self.floor.rect.bottom
-                self.tux_movement.direction.y = 0
+        # if self.tux_player.get_hitbox_colliderect(self.floor.rect):
+        if self.floor.rect.colliderect(self.tux_player.hitbox.rect):
+            print("nice shot")
+
+            if self.tux_movement.direction.x > 0:
+                self.tux_player.core_y = self.floor.rect.top - self.tux_player.get_hitbox_height()
+                self.move_tux.y = 0
+
+            elif self.tux_movement.direction.x < 0:
+                self.tux_player.core_y = self.floor.rect.bottom
+
+
+            # self.move_tux.y = 0
 
 
     def update(self):
         self.forces_tux.y += 0.8
         if self.tux_movement.direction.y < -0.5:
-            self.forces_tux.y += -16 * GlobalProperties._dt 
-        self.horizontal_collision()
-        self.vertical_collision()
+            self.forces_tux.y += -2 
 
+        # self.horizontal_collision()
+        # self.vertical_collision()
         self.move_tux += self.forces_tux
+
+        # forces movement (accelaration)
+        self.final_move.x += GlobalProperties._dt * (self.move_tux.x + self.tux_movement.direction.x * self.TUX_VEL)
+        self.final_move.y += (GlobalProperties._dt * self.move_tux.y)
+
+        
         debug_print("key direction", self.tux_movement.direction, tags=['Coordinates'])
         debug_print("move", self.move_tux,tags=['Coordinates'])
         debug_print("forces", self.forces_tux,tags=['Coordinates'])
-        # keyboard movement
-        self.tux_player.core_x += self.tux_movement.direction.x * self.TUX_VEL * GlobalProperties._dt
+        debug_print("Coords", self.tux_player.hitbox.rect ,tags=['Coordinates'])
+        debug_print("Coords", self.tux_player.core_x, self.tux_player.core_y ,tags=['Coordinates'])
+        debug_print("final_move", self.final_move ,tags=['Coordinates'])
         
         # self.tux_player.core_y += self.tux_movement.direction.y * self.TUX_VEL * GlobalProperties._dt
 
-        # forces movement (accelaration)
-        self.tux_player.core_x += GlobalProperties._dt * self.move_tux.x
-        self.tux_player.core_y += GlobalProperties._dt * self.move_tux.y
+
+        temp_rect = self.tux_player.hitbox.rect 
+        temp_rect.x += self.final_move.x
+
+        if self.floor.rect.colliderect(temp_rect):
+            debug_print("collided with floor on x", tags=["Collision"])
+            if self.final_move.x > 0:
+                self.tux_player.new_hitbox_right(self.floor.rect.left) 
+            elif self.final_move.x < 0:
+                self.tux_player.new_hitbox_left(self.floor.rect.right)
+        else:
+            self.tux_player.core_x += self.final_move.x
+
+        temp_rect = self.tux_player.hitbox.rect 
+        temp_rect.y += self.final_move.y
+        # if self.floor.rect.collidepoint(self.tux_player.core_x, self.tux_player.core_y + self.tux_player.get_hitbox_height() + self.final_move.y):
+        if self.floor.rect.colliderect(temp_rect):
+            debug_print("collided with floor on y", tags=["Collision"])
+            if self.final_move.y > 0:
+                self.tux_player.new_hitbox_bottom(self.floor.rect.top)
+                self.move_tux.y = 0
+                self.forces_tux.y = 0
+            elif self.final_move.y < 0:
+                self.tux_player.new_hitbox_top(self.floor.rect.bottom)
+                self.move_tux.y = 0
+                self.forces_tux.y = 0
+        else:
+            self.tux_player.core_y += self.final_move.y
 
         self.forces_tux.x = 0
         self.forces_tux.y = 0
+        self.final_move.x = 0
+        self.final_move.y = 0
 
         # self.tux_player.update()
         self.tux_player.update_area()
@@ -119,8 +167,8 @@ class ObjectMovement():
         self.direction = pygame.math.Vector2(0,0)
 
     def keyboard_nm(self, 
-            movement_map:tuple[int, int, int, int] = [1,-1,-1,1],
-            keys_pressed:tuple = None
+            keys_pressed:tuple,
+            movement_map:tuple[int, int, int, int] = (1,-1,-1,1),
         ) -> pygame.math.Vector2:
         
         """
@@ -145,7 +193,6 @@ class ObjectMovement():
         if keys_pressed[pygame.K_SPACE]: # up
             self.direction.y += movement_map[2] 
 
-
         if self.direction.x != 0 and self.direction.y != 0:
             self.direction = self.direction.normalize()
 
@@ -157,7 +204,7 @@ if __name__ == '__main__':
     SM.current_scene = 'menu'
     while True:
         SM.render_current_scene()
-        debug_print(SceneCatcher.scenes, tags=["Rendering"])
+        # debug_print(SceneCatcher.scenes, tags=["Rendering"])
 
 
 # dt = 0

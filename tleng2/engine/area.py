@@ -2,7 +2,7 @@ import pygame
 from warnings import warn
 from ..utils.colors import WHITE, BLACK
 from ..utils import GlobalSettings, GlobalProperties
-from ..utils.stubs.annotations import Color
+from ..utils.annotations import Color
 from ..utils.debug import debug_print
 
 
@@ -26,8 +26,8 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
             width: float = 10.0,
             height: float = 10.0,
             color: Color = WHITE,
-            polygon: list = None,
-            poly_polygon: list = None,
+            polygon: list | None = None,
+            poly_polygon: list | None = None,
         ) -> None:
         '''
         Initialising the Area
@@ -43,7 +43,6 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
         self.image = pygame.Surface([width,height])
         debug_print(float(x), float(y), float(width) , float(height), type(x), type(y), type(width) , type(height), tags=["EngineAreaInit"])
         self.rect = pygame.FRect(float(x), float(y), float(width) , float(height)) # screen coordinates
-
         self.core_x = x # actual x coordinate
         self.core_y = y # actual y coordinate
         self.core_width = width

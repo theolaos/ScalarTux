@@ -1,4 +1,4 @@
-import pygame, json
+import json
 from os import path, getcwd
 from abc import abstractmethod, ABC
 
@@ -51,7 +51,7 @@ class GlobalSettings:
             try:
                 with open(file_name, "r") as settings_json:
                     data = json.load(settings_json)
-                    print(data)
+                    # debug_print(data)
                     # TODO: Write the load_settings_json to actually use the settings that are in json.
                     break
             except Exception as e:

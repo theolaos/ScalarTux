@@ -1,4 +1,4 @@
-from .stubs.annotations import Color
+from .annotations import Color
 from .settings import GlobalSettings, LocalSettings
 from .properties import GlobalProperties, LocalProperties
 __all__ = [

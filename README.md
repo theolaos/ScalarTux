@@ -5,3 +5,18 @@
 A game for our beloved Tux mascot where he needs to escape the rise of windows by scaling itself.
 
 The game is still under development wait for any news.
+
+Rules for Contribution:
+
+When you want to push your changes to the main branch you must check these to do so:
+|TypeChecker (mypy) Spits out ok reasonable errors:                                                       |        |
+|------------------------------------------------------|--------|
+| The code works as your last commit intended to do:   |        |
+| Unit tests pass without a problem:                   |        |
+
+(:x:,:white_check_mark:)
+
+
+TODO:
+
+Change the way that hitbox is the same as core x of the entity

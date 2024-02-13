@@ -6,7 +6,7 @@ from typing_extensions import Protocol
 from typing import Sequence, Tuple, Union, overload
 
 # Coordinate = Union[Tuple[float, float], Vector2()]
-Color = Tuple[int,int,int]
+Color = Union[Tuple[int,int,int, int], Tuple[int,int,int]]
 # {"%name_anim1%" : {"anim":[str,str,...], "frames" : int}, "%name_anim2%" : {"anim":[str,str,...], "frames" : int}, ...}
 
 Coordinate = Sequence[float]
