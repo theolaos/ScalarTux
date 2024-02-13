@@ -9,14 +9,19 @@ The game is still under development wait for any news.
 Rules for Contribution:
 
 When you want to push your changes to the main branch you must check these to do so:
-|TypeChecker (mypy) Spits out ok reasonable errors:                                                       |        |
+|TypeChecker (mypy) Spits out ok reasonable errors:    | :white_check_mark:        |
 |------------------------------------------------------|--------|
-| The code works as your last commit intended to do:   |        |
-| Unit tests pass without a problem:                   |        |
+| The code works as your last commit intended to do:   |   :white_check_mark:     |
+| Unit tests pass without a problem:                   |   :x:     |
 
-(:x:,:white_check_mark:)
+There are no unit tests, yet
+
+( :x: , :white_check_mark: )
 
 
 TODO:
 
-Change the way that hitbox is the same as core x of the entity
+- Change the way that hitbox is the same as core x of the entity
+- Redo x, y system for entities
+  - Abstraction of the hitbox x, y coordinates
+- Abstraction of the rectangle collision detector.
