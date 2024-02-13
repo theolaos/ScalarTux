@@ -8,9 +8,9 @@ def debug_print(*values: object, sep: str | None = " ", end: str | None = "\n", 
     if GlobalSettings._debug and DebugTags.debug_tags is not []:
         for i in tags:
             if i in DebugTags.debug_tags:
-                print(*values, sep, end, file, flush)
+                print(*values, sep=sep, end=end, file=file, flush=flush)
     elif GlobalSettings._debug:
-        print(*values, sep, end, file, flush)
+        print(*values, sep=sep, end=end, file=file, flush=flush)
 
 class DebugTags:
     '''
