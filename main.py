@@ -43,12 +43,14 @@ class Menu(Scene):
         self.tux_player.anim_service.current_anim = "images"
         self.tux_player.anim_service.current_image_anim = "default_surf"
 
-        self.floor = Area(100,400,200,200,BLACK)
+        self.floor1 = Area(100,400,200,200,BLACK)
         self.floor2 = Area(600,400,200,200,BLACK)
+        self.floor3 = Area(400,350,100,20, BLACK)
+        self.floor4 = Area(350,420,200,20, BLACK)
+        self.list_tiles = [self.floor1,self.floor2, self.floor3, self.floor4]
 
-        self.list_tiles = [self.floor,self.floor2]
-
-        self.GRAVITY = 0.8
+        self.GRAVITY = 0.5
+        self.JUMP = 9
 
         self.on_ground = False
     
@@ -59,6 +61,17 @@ class Menu(Scene):
                 pygame.quit()
                 sys.exit()
         self.tux_movement.keyboard_nm(keys_pressed=keys_pressed)
+        
+        if keys_pressed[pygame.K_ESCAPE]:
+            self.reset_position_tux()
+            # self.
+
+    def reset_position_tux(self)->None:
+        # print("ESCAPE presse __________________________________________")
+        self.tux_player.new_hitbox_topright((700,100))
+        self.forces_tux = pygame.math.Vector2(0,0)
+        self.move_tux =  pygame.math.Vector2(0,0)
+        self.final_move = pygame.math.Vector2(0,0)
 
 
     def horizontal_collision_static(self, list_tiles, rect, move_x):
@@ -104,7 +117,6 @@ class Menu(Scene):
             self.on_ground = False
 
 
-
     def vertical_collision(self):
         temp_rect = self.tux_player.hitbox.rect.copy()
         temp_rect.y += self.final_move.y
@@ -136,17 +148,27 @@ class Menu(Scene):
 
 
     def update(self):
-        self.forces_tux.y += 0.5
+        dt = GlobalProperties._dt
+        target_fps = 60
+
+        self.forces_tux.y += self.GRAVITY*dt*target_fps
         if self.tux_movement.direction.y < -0.5 and self.on_ground:
-            self.forces_tux.y += -9
+            self.forces_tux.y += -self.JUMP
 
         # self.horizontal_collision()
         # self.vertical_collision()
         self.move_tux += self.forces_tux
-
+        
         # forces movement (accelaration)
-        self.final_move.x +=  (self.move_tux.x + self.tux_movement.direction.x * self.TUX_VEL)
-        self.final_move.y += (1* self.move_tux.y)
+        self.final_move.x += self.move_tux.x*dt + dt*(self.tux_movement.direction.x * self.TUX_VEL)*target_fps
+        self.final_move.y += self.move_tux.y*dt*target_fps
+        
+
+        self.horizontal_collision()
+        self.vertical_collision()
+
+        # self.tux_player.update()
+        self.tux_player.update_area()
 
         debug_print("Starting Debug _______",tags=['Coordinates'])
         debug_print("key direction", self.tux_movement.direction, tags=['Coordinates'])
@@ -156,24 +178,12 @@ class Menu(Scene):
         debug_print("Coords PL ", self.tux_player.core_x, self.tux_player.core_y ,tags=['Coordinates'])
         debug_print("final_move", self.final_move ,tags=['Coordinates'])
         debug_print("on_ground", self.on_ground ,tags=['Coordinates'])
-        
-        
-        # self.tux_player.core_y += self.tux_movement.direction.y * self.TUX_VEL * GlobalProperties._dt
-        # list_tiles = [self.floor.rect,self.floor2.rect]
-        # self.tux_player.new_hitbox_left(self.horizontal_collision(list_tiles, self.tux_player.hitbox.rect))
-        # self.tux_player.new_hitbox_top(self.vertical_collision())
+        debug_print("dt", GlobalProperties._dt ,tags=['Coordinates'])
 
-        self.horizontal_collision()
-        self.vertical_collision()
-
-        
         self.forces_tux.x = 0
         self.forces_tux.y = 0
         self.final_move.x = 0
         self.final_move.y = 0
-
-        # self.tux_player.update()
-        self.tux_player.update_area()
 
 
     def render(self):
@@ -181,15 +191,14 @@ class Menu(Scene):
         # self.tux_player.hitbox.render()
         self.tux_player.anim_service.anim_dict["images"]["default_surf"].fill(RED)
         self.tux_player.render()
-        self.floor.render()
-        self.floor2.render()
+        for tile in self.list_tiles:
+            tile.render()
         #self.tux_player.hitbox.render_outline()  
         #print("%.2f %.2f" % (self.tux_player.core_x , self.tux_player.core_y))
         
         debug_print("render from menu done", tags=["Rendering"])
 
         
-
 class ObjectMovement():
     def __init__(self,):
         self.direction = pygame.math.Vector2(0,0)
@@ -221,8 +230,8 @@ class ObjectMovement():
         if keys_pressed[pygame.K_SPACE]: # up
             self.direction.y += movement_map[2] 
 
-        if self.direction.x != 0 and self.direction.y != 0:
-            self.direction = self.direction.normalize()
+        # if self.direction.x != 0 and self.direction.y != 0:
+        #     self.direction = self.direction.normalize()
 
         return self.direction
     
@@ -230,25 +239,7 @@ if __name__ == '__main__':
     menu = Menu('menu')
     SM = SceneManager()
     SM.current_scene = 'menu'
+    # print(menu.floor)
     while True:
         SM.render_current_scene()
-        # debug_print(SceneCatcher.scenes, tags=["Rendering"])
-
-
-# dt = 0
-
-# while True:
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             pygame.quit()
-#             sys.exit()
-    
-#     GlobalProperties.fill_display((200,255,200))
-#     # tux_player.render()
-#     tux_player.hitbox.render()
-#     tux_player.hitbox.render_outline()
-
-#     GlobalProperties.update_window()
-
-#     pygame.display.update()
-#     dt = GlobalProperties._clock.tick(144) / 1000
+        debug_print(SceneCatcher.scenes, tags=["Rendering"])

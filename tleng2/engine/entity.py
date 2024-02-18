@@ -205,6 +205,16 @@ class Entity:
         self.core_x = self.hitbox.rect.x
         self.core_y = self.hitbox.rect.y
 
+    
+    def new_hitbox_topright(
+            self,
+            new_topright: tuple
+        ) -> None: 
+        self.hitbox.rect.topright = new_topright
+        self.core_x = self.hitbox.rect.x
+        self.core_y = self.hitbox.rect.y
+
+
     def new_hitbox_left(
             self,
             new_left: float | int

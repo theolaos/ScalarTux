@@ -25,3 +25,4 @@ TODO:
 - Redo x, y system for entities
   - Abstraction of the hitbox x, y coordinates
 - Abstraction of the rectangle collision detector.
+- Make `settings.py` load the settings from `settings.json`

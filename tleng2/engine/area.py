@@ -6,6 +6,7 @@ from ..utils.annotations import Color
 from ..utils.debug import debug_print
 
 
+
 class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
     '''
     Class for area, acts as an area that is dedicated to the entity or the class that inherits this, also can be used for "static" hitboxes
@@ -20,7 +21,8 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
         self.image: image (i don't know what it can be used for) (created for the group sprite object) (pygame.Surface)
         self.color: the color of the rectangle (tuple)
     '''
-    def __init__(self,
+    def __init__(
+            self,
             x: float = 0,
             y: float = 0,
             width: float = 10.0,
@@ -49,12 +51,30 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
 
         self.thickness = 0
 
+    def __repr__(self) -> str:
+        if hasattr(self, 'frame_rect') and hasattr(self, 'frame_color'):
+            return f"{self.rect} color:{self.color} frame_rect:{self.frame_rect} frame_color:{self.frame_color}"
+        else:
+            return f"{self.rect} color:{self.color}"
 
-    def colliderect() -> bool:
-        ...
+
+    def collide_area(
+            self,
+            other_area,
+        ) -> bool:
+        """
+        :param other_area: paramater `other_area` must be of type Class Area.
+        :return Area: 
+        """
+        return self.rect.colliderect(other_area.rect)
 
 
-    def rectangular_collisions() -> tuple:
+    def rectangular_collisions(
+            self,
+        ) -> tuple:
+        """
+        :return: Returns from where the collision occured, if no collision occured then it returns (0,0)
+        """
         ...
 
 

@@ -53,7 +53,7 @@ __all__ = [
 
 
 __author__ = "TheooKing/Theolaos"
-__version__ = "v2.2.03-exp"
+__version__ = "v2.2.04-exp"
 
 __name__ = "tleng2"
 __doc__ = f'''TLeng2.py is a python 2d game engine

@@ -1,6 +1,9 @@
 import json
 from os import path, getcwd
 from abc import abstractmethod, ABC
+# from .debug import debug_print
+
+debug_tags = ['JSON_debug']
 
 class LocalSettings:
     @abstractmethod
@@ -26,6 +29,7 @@ class GlobalSettings:
     _scalable_window = False
     _display_ratio_lock = True #if the game only supports 500x500 then the window will ony scale to that ration
     _fps = 60
+    _target_fps = 60
 
     _font = None # global font for the whole game.
     _debug = False
@@ -47,15 +51,16 @@ class GlobalSettings:
         """
         Pass the saved settings from json.
         """
-        for file_name in ["settings.json", path.join(".","settings.json") ,path.join("tleng2","settings.json"), path.join(getcwd(), "tleng2","settings.json")]:
+        for file_name in ["settings.json", path.join("..","settings.json") ,path.join("tleng2","settings.json"), path.join(getcwd(), "tleng2","settings.json")]:
             try:
                 with open(file_name, "r") as settings_json:
                     data = json.load(settings_json)
-                    # debug_print(data)
+                    #debug_print(data, tags=debug_tags)
                     # TODO: Write the load_settings_json to actually use the settings that are in json.
                     break
             except Exception as e:
-                print(e)
-                print(f"Could not find the settings.json file, moving on. (Tried {file_name})")
-                print(path.exists(file_name))
+                #debug_print(e, tags=debug_tags)
+                #debug_print(f"Could not find the settings.json file, moving on. (Tried {file_name})", tags=debug_tags)
+                #debug_print(path.exists(file_name), tags=debug_tags)
+                ...
 

@@ -11,7 +11,7 @@ class LocalProperties:
         e.x. (pseudo code)
 
         self.clock = 30
-        self.window = comic_sans
+        self.font = comic_sans
         self.disp = True
         self.in-game-keyboard = False
         """    
@@ -85,3 +85,12 @@ class GlobalProperties:
         Stores the dt value in GlobalProperties.
         """
         GlobalProperties._dt = GlobalProperties._clock.tick(target_fps) / 1000
+
+
+    # micro optimization
+    @staticmethod
+    def lazy_clock_tick_GP_dt(target_fps:int) -> float:
+        """
+        Stores the dt value in GlobalProperties.
+        """
+        GlobalProperties._dt = GlobalProperties._clock.tick(target_fps) >> 10 # bit shift, clock.tick / 1024
