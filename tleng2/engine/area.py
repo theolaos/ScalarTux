@@ -26,8 +26,6 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
             width: float = 10.0,
             height: float = 10.0,
             color: Color = WHITE,
-            polygon: list | None = None,
-            poly_polygon: list | None = None,
         ) -> None:
         '''
         Initialising the Area
@@ -50,8 +48,16 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
         self.color = color  
 
         self.thickness = 0
-   
-   
+
+
+    def colliderect() -> bool:
+        ...
+
+
+    def rectangular_collisions() -> tuple:
+        ...
+
+
     def render(self) -> None:
         '''
         Draws the area in the screen.
@@ -114,10 +120,6 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
         '''
         Function for the sprite group updating
         '''
-        # self.rect.x = x
-        # self.rect.y = y
-        # self.rect.width = width
-        # self.rect.height = height
 
         self.rect.x = self.core_x
         self.rect.y = self.core_y
@@ -139,3 +141,19 @@ class Area(pygame.sprite.Sprite): # Move area to the entities and stuff
         if self.frame_rect != None:
             self.frame_rect.x = round(self.core_x - self.thickness)
             self.frame_rect.y = round(self.core_y - self.thickness)
+
+
+class LazyArea():
+    """
+    Fast Area
+    """
+    ...
+
+class PolyArea(Area):
+    """
+    Not just a Rectangle
+    """
+    def __init__(self, 
+        polygon: list | None = None,
+        poly_polygon: list | None = None,
+    ) -> None: ...

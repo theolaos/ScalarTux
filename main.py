@@ -30,7 +30,7 @@ camera_movement_map = [1,-1,-1,1]
 class Menu(Scene):
     def __init__(self, scene_name):
         super().__init__(scene_name)
-        self.tux_player = Entity(100,100,20,20,"PLAYER")
+        self.tux_player = Entity(700,100,20,20,"PLAYER")
         self.tux_player.hitbox.set_outline(5, RED)
 
         self.tux_movement = ObjectMovement()
@@ -44,6 +44,9 @@ class Menu(Scene):
         self.tux_player.anim_service.current_image_anim = "default_surf"
 
         self.floor = Area(100,400,200,200,BLACK)
+        self.floor2 = Area(600,400,200,200,BLACK)
+
+        self.list_tiles = [self.floor,self.floor2]
 
         self.GRAVITY = 0.8
 
@@ -58,42 +61,84 @@ class Menu(Scene):
         self.tux_movement.keyboard_nm(keys_pressed=keys_pressed)
 
 
+    def horizontal_collision_static(self, list_tiles, rect, move_x):
+        temp_rect = rect.copy()
+        temp_rect.x += move_x
+
+        for tile in list_tiles:
+
+            if tile.colliderect(temp_rect):
+                debug_print("collided with floor on x", tags=["Collision"])
+                if move_x > 0:
+                    return tile.rect.left
+                elif move_x < 0:
+                    return tile.rect.right + rect.left
+            else:
+                # self.tux_player.new_hitbox_left(self.tux_player.core_x + self.final_move.x)
+                debug_print("updating x", self.tux_player.core_x, tags=["Collision"])
+                self.on_ground = False
+                return move_x
+
+
     def horizontal_collision(self):
-        # if self.tux_player.get_hitbox_colliderect(self.floor.rect):
-        if self.floor.rect.colliderect(self.tux_player.hitbox.rect):
-            if self.tux_movement.direction.x < 0:
-                self.tux_player.core_x = self.floor.rect.right
-            
-            elif self.tux_movement.direction.x > 0:
-                self.tux_player.new_hitbox_bottom = self.floor.rect.left + self.tux_player.get_hitbox_width()
+        temp_rect = self.tux_player.hitbox.rect.copy() 
+        temp_rect.x += self.final_move.x
+        collision = False
+        debug_print("horizontal collision",temp_rect, tags=['Collision'])
 
+        #tile = self.floor
+        for tile in self.list_tiles:
 
-            
+            if tile.rect.colliderect(temp_rect):
+                print(tile.rect, "collided")
+                debug_print("collided with floor on x", tags=["Collision"])
+                collision = True
+                if self.final_move.x > 0:
+                    self.tux_player.new_hitbox_right(tile.rect.left)
 
-            # self.move_tux.x = 0
+                elif self.final_move.x < 0:
+                    self.tux_player.new_hitbox_left(tile.rect.right)
+
+        if collision != True:
+            self.tux_player.core_x += self.final_move.x
+            self.on_ground = False
+
 
 
     def vertical_collision(self):
+        temp_rect = self.tux_player.hitbox.rect.copy()
+        temp_rect.y += self.final_move.y
+        collision = False
 
-        # if self.tux_player.get_hitbox_colliderect(self.floor.rect):
-        if self.floor.rect.colliderect(self.tux_player.hitbox.rect):
-            print("nice shot")
+        debug_print("vertical collision",temp_rect, tags=['Collision'])
+        # if self.floor.rect.collidepoint(self.tux_player.core_x, self.tux_player.core_y + self.tux_player.get_hitbox_height() + self.final_move.y):
+        # tile = self.floor
+        for tile in self.list_tiles:
 
-            if self.tux_movement.direction.x > 0:
-                self.tux_player.core_y = self.floor.rect.top - self.tux_player.get_hitbox_height()
-                self.move_tux.y = 0
+            if tile.rect.colliderect(temp_rect):
+                debug_print(tile.rect, "collided", tags=['Collision'])
+                debug_print("collided with floor on y", tags=["Collision"])
+                collision = True
+                if self.final_move.y > 0:
+                    self.tux_player.new_hitbox_bottom(tile.rect.top)
+                    self.move_tux.y = 0
+                    self.forces_tux.y = 0
+                    self.on_ground = True
 
-            elif self.tux_movement.direction.x < 0:
-                self.tux_player.core_y = self.floor.rect.bottom
+                elif self.final_move.y < 0:
+                    self.tux_player.new_hitbox_top(tile.rect.bottom)
+                    self.move_tux.y = 0
+                    self.forces_tux.y = 0
 
-
-            # self.move_tux.y = 0
+        if collision != True:
+            self.tux_player.core_y += self.final_move.y
+            self.on_ground = False
 
 
     def update(self):
-        self.forces_tux.y += 0.8
+        self.forces_tux.y += 0.5
         if self.tux_movement.direction.y < -0.5 and self.on_ground:
-            self.forces_tux.y += -2
+            self.forces_tux.y += -9
 
         # self.horizontal_collision()
         # self.vertical_collision()
@@ -101,52 +146,27 @@ class Menu(Scene):
 
         # forces movement (accelaration)
         self.final_move.x +=  (self.move_tux.x + self.tux_movement.direction.x * self.TUX_VEL)
-        self.final_move.y += (GlobalProperties._dt* self.move_tux.y)
+        self.final_move.y += (1* self.move_tux.y)
 
-        
+        debug_print("Starting Debug _______",tags=['Coordinates'])
         debug_print("key direction", self.tux_movement.direction, tags=['Coordinates'])
         debug_print("move", self.move_tux,tags=['Coordinates'])
         debug_print("forces", self.forces_tux,tags=['Coordinates'])
-        debug_print("Coords", self.tux_player.hitbox.rect ,tags=['Coordinates'])
-        debug_print("Coords", self.tux_player.core_x, self.tux_player.core_y ,tags=['Coordinates'])
+        debug_print("Coords PLH", self.tux_player.hitbox.rect ,tags=['Coordinates'])
+        debug_print("Coords PL ", self.tux_player.core_x, self.tux_player.core_y ,tags=['Coordinates'])
         debug_print("final_move", self.final_move ,tags=['Coordinates'])
         debug_print("on_ground", self.on_ground ,tags=['Coordinates'])
         
+        
         # self.tux_player.core_y += self.tux_movement.direction.y * self.TUX_VEL * GlobalProperties._dt
+        # list_tiles = [self.floor.rect,self.floor2.rect]
+        # self.tux_player.new_hitbox_left(self.horizontal_collision(list_tiles, self.tux_player.hitbox.rect))
+        # self.tux_player.new_hitbox_top(self.vertical_collision())
 
+        self.horizontal_collision()
+        self.vertical_collision()
 
-        temp_rect = self.tux_player.hitbox.rect 
-        temp_rect.x += self.final_move.x
-
-        if self.floor.rect.colliderect(temp_rect):
-            debug_print("collided with floor on x", tags=["Collision"])
-            if self.final_move.x > 0:
-                self.tux_player.new_hitbox_right(self.floor.rect.left) 
-            elif self.final_move.x < 0:
-                self.tux_player.new_hitbox_left(self.floor.rect.right)
-        else:
-            self.tux_player.core_x += self.final_move.x
-            self.on_ground = False
-
-        temp_rect = self.tux_player.hitbox.rect 
-        temp_rect.y += self.final_move.y
-        # if self.floor.rect.collidepoint(self.tux_player.core_x, self.tux_player.core_y + self.tux_player.get_hitbox_height() + self.final_move.y):
-        if self.floor.rect.colliderect(temp_rect):
-            debug_print("collided with floor on y", tags=["Collision"])
-            if self.final_move.y > 0:
-                self.tux_player.new_hitbox_bottom(self.floor.rect.top)
-                self.move_tux.y = 0
-                self.forces_tux.y = 0
-                self.on_ground = True
-            elif self.final_move.y < 0:
-                self.tux_player.new_hitbox_top(self.floor.rect.bottom)
-                self.move_tux.y = 0
-                self.forces_tux.y = 0
-        else:
-            self.tux_player.core_y += self.final_move.y
-            self.on_ground = False
-
-
+        
         self.forces_tux.x = 0
         self.forces_tux.y = 0
         self.final_move.x = 0
@@ -162,6 +182,7 @@ class Menu(Scene):
         self.tux_player.anim_service.anim_dict["images"]["default_surf"].fill(RED)
         self.tux_player.render()
         self.floor.render()
+        self.floor2.render()
         #self.tux_player.hitbox.render_outline()  
         #print("%.2f %.2f" % (self.tux_player.core_x , self.tux_player.core_y))
         

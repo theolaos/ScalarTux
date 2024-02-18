@@ -194,7 +194,6 @@ class Entity:
             new_bottom: int
         ) -> None:        
         self.hitbox.rect.bottom = new_bottom
-        self.core_x = self.hitbox.rect.x
         self.core_y = self.hitbox.rect.y
 
 
