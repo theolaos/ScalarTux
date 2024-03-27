@@ -22,7 +22,5 @@ There are no unit tests, yet
 TODO:
 
 - Change the way that hitbox is the same as core x of the entity
-- Redo x, y system for entities
-  - Abstraction of the hitbox x, y coordinates
 - Abstraction of the rectangle collision detector.
 - Make `settings.py` load the settings from `settings.json`
